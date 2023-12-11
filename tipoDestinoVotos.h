@@ -6,5 +6,5 @@ using namespace std;
 
 enum class TipoDestinoVotos { VALIDO_LEGENDA, VALIDO_NOMINAL, INVALIDO };
 
-TipoDestinoVotos tipoDestinoVotos(string &tipoDestinoVotos);
+TipoDestinoVotos strToTipoDestinoVotos(const string &tipoDestinoVotos);
 #endif // TIPODESTINOVOTOS_H

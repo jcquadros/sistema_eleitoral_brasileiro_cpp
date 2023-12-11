@@ -24,6 +24,7 @@ class Candidato {
   public:
     Candidato(const int &numero, const string &nome, Partido *partido, const bool &deferido, const bool &eleito, const Genero &genero,
               const TipoDestinoVotos &tipoDestinoVotos, const Data &dataNascimento);
+    Candidato();
     const int &getNumero() const;
     const string &getNome() const;
     Partido *getPartido() const;

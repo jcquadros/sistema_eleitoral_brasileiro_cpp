@@ -9,6 +9,8 @@ Data::Data(string &data) {
     this->ano = stoi(data.substr(6, 4));
 }
 
+Data::Data() : dia(0), mes(0), ano(0) {}
+
 const int &Data::getDia() const { return this->dia; }
 
 const int &Data::getMes() const { return this->mes; }
@@ -30,7 +32,7 @@ bool Data::isLessThan(Data &data) const {
     return false;
 }
 
-int Data::numeroAnos(Data &data) const {
+int Data::numeroAnos(const Data &data) const {
     int anos = 0;
     if (this->ano < data.getAno()) {
         anos = data.getAno() - this->ano;

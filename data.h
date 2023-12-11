@@ -12,12 +12,13 @@ class Data {
   public:
     Data(const int &dia, const int &mes, const int &ano);
     Data(string &data);
+    Data();
     const int &getDia() const;
     const int &getMes() const;
     const int &getAno() const;
     bool isLessThan(Data &data) const;
     // numero de anos entre duas datas
-    int numeroAnos(Data &data) const;
+    int numeroAnos(const Data &data) const;
     int numeroDias(Data &data) const;
 
   private:

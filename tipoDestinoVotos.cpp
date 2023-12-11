@@ -1,6 +1,6 @@
 #include "tipoDestinoVotos.h"
 
-TipoDestinoVotos tipoDestinoVotos(string tipoDestinoVotos) {
+TipoDestinoVotos strToTipoDestinoVotos(const string &tipoDestinoVotos) {
     if (tipoDestinoVotos == "Válido (legenda)") {
         return TipoDestinoVotos::VALIDO_LEGENDA;
     } else if (tipoDestinoVotos == "Válido") {

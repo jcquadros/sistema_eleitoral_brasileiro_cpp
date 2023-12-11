@@ -5,6 +5,8 @@ Candidato::Candidato(const int &numero, const string &nome, Partido *partido, co
     : numero(numero), nome(nome), partido(partido), deferido(deferido), eleito(eleito), genero(genero), tipoDestinoVotos(tipoDestinoVotos),
       dataNascimento(dataNascimento), votosNominais(0) {}
 
+Candidato::Candidato() {}
+
 const int &Candidato::getNumero() const { return numero; }
 
 const string &Candidato::getNome() const { return nome; }
