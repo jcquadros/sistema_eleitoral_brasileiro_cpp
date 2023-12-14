@@ -79,3 +79,5 @@ int Data::numeroDias(Data &data) const {
     }
     return dias;
 }
+
+string Data::getDataNascimentoStr() const { return to_string(this->dia) + "/" + to_string(this->mes) + "/" + to_string(this->ano); }

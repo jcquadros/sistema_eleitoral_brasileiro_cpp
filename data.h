@@ -20,6 +20,7 @@ class Data {
     // numero de anos entre duas datas
     int numeroAnos(const Data &data) const;
     int numeroDias(Data &data) const;
+    string getDataNascimentoStr() const;
 
   private:
     int ehBissexto(int &ano) const;

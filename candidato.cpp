@@ -29,4 +29,10 @@ void Candidato::setVotosNominais(int votosNominais) { this->votosNominais = voto
 
 void Candidato::addVotosNominais(int votosNominais) { this->votosNominais += votosNominais; }
 
-bool Candidato::operator<(const Candidato &candidato) const { return this->votosNominais < candidato.getVotosNominais(); }
+bool candidatoCompare(Candidato &o1, Candidato &o2) {
+    if (o1.getVotosNominais() != o2.getVotosNominais()) {
+        return o2.getVotosNominais() < o1.getVotosNominais();
+    } else {
+        return o1.getDataNascimento().getDia() < o2.getDataNascimento().getDia();
+    }
+}

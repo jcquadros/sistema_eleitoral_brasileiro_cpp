@@ -9,13 +9,13 @@ const string &Partido::getSigla() const { return sigla; }
 
 const int &Partido::getFederacao() const { return federacao; }
 
-const std::vector<Candidato> &Partido::getCandidatos() const { return candidatos; }
+const std::vector<Candidato *> &Partido::getCandidatos() const { return candidatos; }
 
 const int &Partido::getVotosLegenda() const { return votosLegenda; }
 
 const int &Partido::getVotosNominais() const { return votosNominais; }
 
-void Partido::addCandidato(Candidato &candidato) {
+void Partido::addCandidato(Candidato *candidato) {
     // cout << "addCandidato" << candidato.getNome() << endl;
     candidatos.push_back(candidato);
 }
@@ -23,3 +23,10 @@ void Partido::addCandidato(Candidato &candidato) {
 void Partido::addVotosLegenda(int votosLegenda) { this->votosLegenda += votosLegenda; }
 
 void Partido::addVotosNominais(int numeroVotos) { this->votosNominais += numeroVotos; }
+
+int partidoCompare(Partido &o1, Partido &o2) {
+    if (o1.getVotosLegenda() + o1.getVotosNominais() != o2.getVotosLegenda() + o2.getVotosNominais()) {
+        return (o2.getVotosLegenda() + o2.getVotosNominais()) - (o1.getVotosLegenda() + o1.getVotosNominais());
+    }
+    return o1.getNumero() - o2.getNumero();
+}

@@ -14,7 +14,7 @@ class Partido {
     int federacao;
     int votosLegenda;
     int votosNominais;
-    std::vector<Candidato> candidatos;
+    vector<Candidato *> candidatos;
 
   public:
     Partido(const int &numero, const string &sigla, const int &federacao);
@@ -23,10 +23,12 @@ class Partido {
     const int &getFederacao() const;
     const int &getVotosLegenda() const;
     const int &getVotosNominais() const;
-    const std::vector<Candidato> &getCandidatos() const;
-    void addCandidato(Candidato &candidato);
+    const std::vector<Candidato *> &getCandidatos() const;
+    void addCandidato(Candidato *candidato);
     void addVotosLegenda(int votosLegenda);
     void addVotosNominais(int numeroVotos);
 };
 
 #endif // PARTIDO_H
+
+int partidoCompare(Partido &o1, Partido &o2);

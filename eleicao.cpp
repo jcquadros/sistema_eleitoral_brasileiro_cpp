@@ -1,18 +1,18 @@
 
 #include "eleicao.h"
 
-Eleicao::Eleicao(const std::map<int, Candidato *> &candidatos, const std::map<int, Partido *> &partidos, int cargo, const Data &data)
+Eleicao::Eleicao(const unordered_map<int, Candidato *> &candidatos, const unordered_map<int, Partido *> &partidos, int cargo, const Data &data)
     : candidatos(candidatos), partidos(partidos), cargo(cargo), data(data) {}
 
-const std::map<int, Candidato *> &Eleicao::getCandidatos() const { return candidatos; }
+const unordered_map<int, Candidato *> &Eleicao::getCandidatos() const { return candidatos; }
 
-const std::map<int, Partido *> &Eleicao::getPartidos() const { return partidos; }
+const unordered_map<int, Partido *> &Eleicao::getPartidos() const { return partidos; }
 
 const int &Eleicao::getCargo() const { return cargo; }
 
 const Data &Eleicao::getData() const { return data; }
 
-void Eleicao::processaVotacao(const std::map<int, int> &votos) {
+void Eleicao::processaVotacao(const unordered_map<int, int> &votos) {
     for (const auto &voto : votos) {
         int numero = voto.first;
         int numeroVotos = voto.second;

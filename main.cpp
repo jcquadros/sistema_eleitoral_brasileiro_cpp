@@ -1,6 +1,6 @@
 
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "data.h"
@@ -8,8 +8,8 @@
 #include "leitorCsv.h"
 #include "relatorio.h"
 
-#define CARGO_ESTADUAL 6
-#define CARGO_FEDERAL 7
+#define CARGO_ESTADUAL 7
+#define CARGO_FEDERAL 6
 
 using namespace std;
 
@@ -53,24 +53,30 @@ int main(int argc, char *argv[]) {
 
     Data data(dataStr);
     Eleicao *eleicao = eleicaoFromCsv(caminhoArquivoCandidatos, cargo, data);
+
+    // for (auto &candidato : eleicao->getCandidatos()) {
+    //     cout << candidato.second->getNome() << endl;
+    // }
+
+    // for (auto &partido : eleicao->getPartidos()) {
+    //     cout << partido.second->getSigla() << endl;
+    // }
     cout << "oiii" << endl;
 
-    map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
+    unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
     eleicao->processaVotacao(*mapaVotacao);
-    for (auto &candidato : eleicao->getCandidatos()) {
-        cout << candidato.second->getNome() << endl;
-    }
-    // print eleicao
-    for (auto &candidato : eleicao->getCandidatos()) {
-        Candidato *c = candidato.second;
-        cout << c->getNome() << " " << c->getNumero() << " " << c->getPartido()->getSigla() << " " << c->getVotosNominais() << endl;
-    }
+    // for (auto &vote : *mapaVotacao) {
+    //     cout << vote.first << " " << vote.second << endl;
+    // }
 
-    for (auto &partido : eleicao->getPartidos()) {
-        Partido *p = partido.second;
-        cout << p->getSigla() << " " << p->getFederacao() << " " << p->getVotosLegenda() << " " << p->getVotosNominais() << endl;
-        cout << endl;
-    }
+    // for (auto &candidato : eleicao->getCandidatos()) {
+    //     cout << candidato.second->getNome() << " " << candidato.second->getVotosNominais() << endl;
+    // }
+
+    // for (auto &partido : eleicao->getPartidos()) {
+    //     cout << partido.second->getSigla() << " " << partido.second->getVotosLegenda() << " " << partido.second->getVotosNominais() << endl;
+    // }
+
     Relatorio r(*eleicao);
     printRelatorios(r);
 

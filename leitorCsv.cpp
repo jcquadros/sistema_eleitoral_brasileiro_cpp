@@ -59,7 +59,7 @@ string iso_8859_1_to_utf8(string str) {
     return strOut;
 }
 
-void _processarLinhaCandidato(vector<string> &campos, map<int, Partido *> &partidos, map<int, Candidato *> &candidatos, int cargo) {
+void _processarLinhaCandidato(vector<string> &campos, unordered_map<int, Partido *> &partidos, unordered_map<int, Candidato *> &candidatos, int cargo) {
     campos[INDICE_CARGO] = iso_8859_1_to_utf8(campos[INDICE_CARGO].substr(1, campos[INDICE_CARGO].length() - 2));
     campos[INDICE_N_PARTIDO] = iso_8859_1_to_utf8(campos[INDICE_N_PARTIDO].substr(1, campos[INDICE_N_PARTIDO].length() - 2));
     campos[INDICE_NOME_PARTIDO] = iso_8859_1_to_utf8(campos[INDICE_NOME_PARTIDO].substr(1, campos[INDICE_NOME_PARTIDO].length() - 2));
@@ -99,7 +99,7 @@ void _processarLinhaCandidato(vector<string> &campos, map<int, Partido *> &parti
 
             Candidato *candidato = new Candidato(nCandidato, nomeCandidato, partido, deferido, eleito, genero, tipoDstVts, dataNasc);
             candidatos.insert(pair<int, Candidato *>(nCandidato, candidato));
-            partido->addCandidato(*candidato);
+            partido->addCandidato(candidato);
         }
 
     } catch (exception &e) {
@@ -110,8 +110,8 @@ void _processarLinhaCandidato(vector<string> &campos, map<int, Partido *> &parti
 Eleicao *eleicaoFromCsv(string &nomeArquivo, int cargo, Data &dataEleicao) {
     ifstream inputStream(nomeArquivo);
     string linha;
-    map<int, Partido *> partidos = map<int, Partido *>();
-    map<int, Candidato *> candidatos = map<int, Candidato *>();
+    unordered_map<int, Partido *> partidos = unordered_map<int, Partido *>();
+    unordered_map<int, Candidato *> candidatos = unordered_map<int, Candidato *>();
 
     getline(inputStream, linha); // cabeçalho
     while (getline(inputStream, linha)) {
@@ -128,8 +128,8 @@ Eleicao *eleicaoFromCsv(string &nomeArquivo, int cargo, Data &dataEleicao) {
     return new Eleicao(candidatos, partidos, cargo, dataEleicao);
 }
 
-map<int, int> *mapaVotacaoFromCsv(string &nomeArquivo, int cargo) {
-    map<int, int> votos;
+unordered_map<int, int> *mapaVotacaoFromCsv(string &nomeArquivo, int cargo) {
+    unordered_map<int, int> votos;
 
     ifstream file(nomeArquivo);
     string linha;
@@ -152,14 +152,14 @@ map<int, int> *mapaVotacaoFromCsv(string &nomeArquivo, int cargo) {
                 continue;
             }
 
-            if (votos.count(numeroCandidato)) {
-                quantidadeVotos += votos.at(numeroCandidato);
+            if (votos.count(numeroCandidato) == 0) {
+                votos.insert(pair<int, int>(numeroCandidato, quantidadeVotos));
+            } else {
+                votos.at(numeroCandidato) += quantidadeVotos;
             }
-
-            votos.insert(pair<int, int>(numeroCandidato, quantidadeVotos));
         }
     }
 
     file.close();
-    return new map<int, int>(votos);
+    return new unordered_map<int, int>(votos);
 }

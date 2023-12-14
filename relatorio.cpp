@@ -11,16 +11,43 @@
 using namespace std;
 
 Relatorio::Relatorio(Eleicao eleicao) : cargo(eleicao.getCargo()), data(eleicao.getData()) {
+
+    // ordenar em ordem decrescente do numero de votos e em caso de desempate os mais velhos tem prioridade
     for (const auto &candidato : eleicao.getCandidatos()) {
+        // cout << candidato.second->getNome() << endl;
         candidatos.push_back(*(Candidato *)candidato.second);
     }
 
     for (const auto &partido : eleicao.getPartidos()) {
+        // cout << partido.second->getSigla() << endl;
         partidos.push_back(*(Partido *)partido.second);
     }
+    cout << "Salvou" << endl;
 
-    sort(candidatos.begin(), candidatos.end(), [](const Candidato &a, const Candidato &b) { return a.getNumero() < b.getNumero(); });
-    sort(partidos.begin(), partidos.end(), [](const Partido &a, const Partido &b) { return a.getNumero() < b.getNumero(); });
+    sort(candidatos.begin(), candidatos.end(), [](Candidato &a, Candidato &b) {
+        if (a.getVotosNominais() != b.getVotosNominais()) {
+            return a.getVotosNominais() > b.getVotosNominais();
+        }
+        return a.getDataNascimento().getDia() < b.getDataNascimento().getDia();
+    });
+
+    sort(partidos.begin(), partidos.end(), [](Partido &a, Partido &b) {
+        if (a.getVotosLegenda() + a.getVotosNominais() != b.getVotosLegenda() + b.getVotosNominais()) {
+            return (a.getVotosLegenda() + a.getVotosNominais()) > (b.getVotosLegenda() + b.getVotosNominais());
+        }
+        return a.getNumero() < b.getNumero();
+    });
+
+    cout << "Ordenou" << endl;
+
+    for (const auto &candidato : candidatos) {
+        cout << candidato.getNome() << " Numero de votos: " << candidato.getVotosNominais()
+             << " Data de nascimento: " << candidato.getDataNascimento().getDataNascimentoStr() << endl;
+    }
+
+    for (const auto &partido : partidos) {
+        cout << partido.getNumero() << " - " << partido.getSigla() << " Numero de votos: " << partido.getVotosLegenda() + partido.getVotosNominais() << endl;
+    }
 }
 
 const int Relatorio::numeroDeVagas() const {
@@ -47,7 +74,10 @@ const string Relatorio::candidatosEleitos() const {
     }
 
     for (const auto &candidato : candidatosEleitos) {
-        response += to_string(++i) + " - " + candidato.getNome() + "\n";
+        response += to_string(++i) + " - ";
+        Partido *partido = candidato.getPartido();
+        response += (partido->getFederacao() != -1) ? "*" : "";
+        response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
     }
 
     return response;
@@ -58,13 +88,13 @@ const string Relatorio::candidatosMaisVotados() const {
     int i = 0;
 
     vector<Candidato> candidatosOrdenadosVotos = candidatos;
-    sort(candidatosOrdenadosVotos.begin(), candidatosOrdenadosVotos.end(),
-         [](const Candidato &a, const Candidato &b) { return a.getVotosNominais() > b.getVotosNominais(); });
-
     candidatosOrdenadosVotos.resize(numeroDeVagas());
 
     for (const auto &candidato : candidatosOrdenadosVotos) {
-        response += to_string(++i) + " - " + candidato.getNome() + "\n";
+        response += to_string(++i) + " - ";
+        Partido *partido = candidato.getPartido();
+        response += (partido->getFederacao() != -1) ? "*" : "";
+        response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
     }
 
     return response;
@@ -77,7 +107,11 @@ const string Relatorio::candidatosNaoEleitosEleitosMajoritariamente() const {
 
     for (int i = 0; i < numDeVagas; i++) {
         if (!candidatos[i].isEleito()) {
-            response += to_string(i + 1) + " - " + candidatos[i].getNome() + "\n";
+            response += to_string(i + 1) + " - ";
+            const Candidato &candidato = candidatos[i];
+            Partido *partido = candidato.getPartido();
+            response += (partido->getFederacao() != -1) ? "*" : "";
+            response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
         }
     }
 
@@ -90,20 +124,24 @@ const string Relatorio::candidatosEleitosNaoEleitosMajoritariamente() const {
 
     for (int i = numeroDeVagas(); i < (long int)candidatos.size(); i++) {
         if (candidatos[i].isEleito()) {
-            response += to_string(i + 1) + " - " + candidatos[i].getNome() + "\n";
+            response += to_string(i + 1) + " - ";
+            const Candidato &candidato = candidatos[i];
+            Partido *partido = candidato.getPartido();
+            response += (partido->getFederacao() != -1) ? "*" : "";
+            response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
         }
     }
     return response;
 }
 
 const string Relatorio::votacaoPartidos() const {
-    locale loc("pt_BR.UTF-8");
+    // locale loc("pt_BR.UTF-8");
     string response = "Votação dos partidos e número de candidatos eleitos:\n";
     int i = 0;
     for (const auto &partido : partidos) {
         int candEleitos = 0;
         for (const auto &candidato : partido.getCandidatos()) {
-            if (candidato.isEleito()) {
+            if (candidato->isEleito()) {
                 candEleitos++;
             }
         }
@@ -122,7 +160,7 @@ const string Relatorio::votacaoPartidos() const {
 }
 
 const string Relatorio::primeiroUltimoColocadosPorPartido() const {
-    locale loc("pt_BR.UTF-8");
+    // locale loc("pt_BR.UTF-8");
     string response = "Primeiro e último colocados de cada partido:\n";
     int i = 0;
 
@@ -133,12 +171,46 @@ const string Relatorio::primeiroUltimoColocadosPorPartido() const {
         }
     }
 
-    sort(partidosOrdenados.begin(), partidosOrdenados.end(), [](const Partido &a, const Partido &b) { return a.getSigla() < b.getSigla(); });
+    // partido ordenado em ordem decrescente a partir do numero de votos do maior candidato do partido
+    sort(partidosOrdenados.begin(), partidosOrdenados.end(), [](const Partido &a, const Partido &b) {
+        const vector<Candidato *> &candidatosPartidoA = a.getCandidatos();
+        const vector<Candidato *> &candidatosPartidoB = b.getCandidatos();
+
+        Candidato *maxCandidatoA = candidatosPartidoA[0];
+        for (const auto &candidato : candidatosPartidoA) {
+            if (candidato->getVotosNominais() != maxCandidatoA->getVotosNominais()) {
+                if (candidato->getVotosNominais() > maxCandidatoA->getVotosNominais()) {
+                    maxCandidatoA = candidato;
+                }
+            } else {
+                if (candidato->getDataNascimento().getDia() < maxCandidatoA->getDataNascimento().getDia()) {
+                    maxCandidatoA = candidato;
+                }
+            }
+        }
+
+        Candidato *maxCandidatoB = candidatosPartidoB[0];
+        for (const auto &candidato : candidatosPartidoB) {
+            if (candidato->getVotosNominais() != maxCandidatoB->getVotosNominais()) {
+                if (candidato->getVotosNominais() > maxCandidatoB->getVotosNominais()) {
+                    maxCandidatoB = candidato;
+                }
+            } else {
+                if (candidato->getDataNascimento().getDia() < maxCandidatoB->getDataNascimento().getDia()) {
+                    maxCandidatoB = candidato;
+                }
+            }
+        }
+        if (maxCandidatoA->getVotosNominais() != maxCandidatoB->getVotosNominais()) {
+            return maxCandidatoA->getVotosNominais() > maxCandidatoB->getVotosNominais();
+        }
+        return a.getNumero() < b.getNumero();
+    });
 
     for (const auto &partido : partidosOrdenados) {
-        vector<Candidato> candidatosPartido;
+        vector<Candidato *> candidatosPartido;
         for (const auto &candidato : partido.getCandidatos()) {
-            if (candidato.isDeferido()) {
+            if (candidato->isDeferido()) {
                 candidatosPartido.push_back(candidato);
             }
         }
@@ -146,15 +218,30 @@ const string Relatorio::primeiroUltimoColocadosPorPartido() const {
         if (candidatosPartido.size() == 0) {
             continue;
         }
-
+        // o maior é o mais votado e em caso de desempate o mais velho
         response += to_string(++i) + " - " + partido.getSigla() + " - " + to_string(partido.getNumero()) + ", ";
-        auto maxCandidato = max_element(candidatosPartido.begin(), candidatosPartido.end(),
-                                        [](const Candidato &a, const Candidato &b) { return a.getVotosNominais() < b.getVotosNominais(); });
+        Candidato *maxCandidato = candidatosPartido[0];
+        Candidato *minCandidato = candidatosPartido[0];
+        for (const auto &candidato : candidatosPartido) {
+            if (candidato->getVotosNominais() != maxCandidato->getVotosNominais()) {
+                if (candidato->getVotosNominais() > maxCandidato->getVotosNominais()) {
+                    maxCandidato = candidato;
+                } else if (candidato->getVotosNominais() < minCandidato->getVotosNominais()) {
+                    minCandidato = candidato;
+                }
+            } else {
+                if (candidato->getDataNascimento().getDia() < maxCandidato->getDataNascimento().getDia()) {
+                    maxCandidato = candidato;
+                } else if (candidato->getDataNascimento().getDia() > minCandidato->getDataNascimento().getDia()) {
+                    minCandidato = candidato;
+                }
+            }
+        }
+
         response += maxCandidato->getNome() + " (" + to_string(maxCandidato->getNumero()) + ", " + to_string(maxCandidato->getVotosNominais()) +
                     (maxCandidato->getVotosNominais() > 1 ? " votos)" : " voto)");
+        // o menor é o menos votado e em caso de desempate o mais novo
 
-        auto minCandidato = min_element(candidatosPartido.begin(), candidatosPartido.end(),
-                                        [](const Candidato &a, const Candidato &b) { return a.getVotosNominais() < b.getVotosNominais(); });
         response += " / " + minCandidato->getNome() + " (" + to_string(minCandidato->getNumero()) + ", " + to_string(minCandidato->getVotosNominais()) +
                     (minCandidato->getVotosNominais() > 1 ? " votos)\n" : " voto)\n");
     }
@@ -162,7 +249,7 @@ const string Relatorio::primeiroUltimoColocadosPorPartido() const {
 }
 
 const string Relatorio::eleitosPorFaixaEtaria() const {
-    locale loc("pt_BR.UTF-8");
+    // locale loc("pt_BR.UTF-8");
     vector<Candidato> candidatosEleitos;
     for (const auto &candidato : candidatos) {
         if (candidato.isEleito()) {
@@ -204,7 +291,7 @@ const string Relatorio::eleitosPorFaixaEtaria() const {
 }
 
 const string Relatorio::eleitosPorGenero() const {
-    locale loc("pt_BR.UTF-8");
+    // locale loc("pt_BR.UTF-8");
     vector<Candidato> candidatosEleitos;
     for (const auto &candidato : candidatos) {
         if (candidato.isEleito()) {
@@ -231,7 +318,7 @@ const string Relatorio::eleitosPorGenero() const {
 }
 
 const string Relatorio::totalDeVotos() const {
-    locale loc("pt_BR.UTF-8");
+    // locale loc("pt_BR.UTF-8");
     double totalDeVotos = 0;
     int totalDeVotosNominais = 0;
     int totalDeVotosLegenda = 0;
