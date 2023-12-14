@@ -1,19 +1,5 @@
 #include "leitorCsv.h"
 
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <string>
-#include <vector>
-
-#include "candidato.h"
-#include "data.h"
-#include "eleicao.h"
-#include "genero.h"
-#include "partido.h"
-#include "tipoDestinoVotos.h"
-
 #define INDICE_CARGO 13
 #define INDICE_N_PARTIDO 27
 #define INDICE_NOME_PARTIDO 28
@@ -33,6 +19,24 @@
 #define NUMERO_MAXIMO_CANDIDATO 98
 
 using namespace std;
+
+Genero intToGenero(const int &genero) {
+    if (genero == 2) {
+        return Genero::MASCULINO;
+    } else {
+        return Genero::FEMININO;
+    }
+}
+
+TipoDestinoVotos strToTipoDestinoVotos(const string &tipoDestinoVotos) {
+    if (tipoDestinoVotos == "Válido (legenda)") {
+        return TipoDestinoVotos::VALIDO_LEGENDA;
+    } else if (tipoDestinoVotos == "Válido") {
+        return TipoDestinoVotos::VALIDO_NOMINAL;
+    } else {
+        return TipoDestinoVotos::INVALIDO;
+    }
+}
 
 // nao houve outra solução a senão fazer cópia ou eu gastaria muitas linhas de código
 string iso_8859_1_to_utf8(string str) {
@@ -55,7 +59,7 @@ string iso_8859_1_to_utf8(string str) {
     return strOut;
 }
 
-void _processarLinhaCandidato(vector<string> &campos, map<int, Partido> &partidos, map<int, Candidato> &candidatos, int cargo) {
+void _processarLinhaCandidato(vector<string> &campos, map<int, Partido *> &partidos, map<int, Candidato *> &candidatos, int cargo) {
     campos[INDICE_CARGO] = iso_8859_1_to_utf8(campos[INDICE_CARGO].substr(1, campos[INDICE_CARGO].length() - 2));
     campos[INDICE_N_PARTIDO] = iso_8859_1_to_utf8(campos[INDICE_N_PARTIDO].substr(1, campos[INDICE_N_PARTIDO].length() - 2));
     campos[INDICE_NOME_PARTIDO] = iso_8859_1_to_utf8(campos[INDICE_NOME_PARTIDO].substr(1, campos[INDICE_NOME_PARTIDO].length() - 2));
@@ -74,10 +78,10 @@ void _processarLinhaCandidato(vector<string> &campos, map<int, Partido> &partido
         int nFedPartido = stoi(campos[INDICE_N_FED_PARTIDO]);
 
         if (partidos.count(nPartido) == 0) {
-            partidos.insert(pair<int, Partido>(nPartido, Partido(nPartido, nomePartido, nFedPartido)));
+            partidos.insert(pair<int, Partido *>(nPartido, new Partido(nPartido, nomePartido, nFedPartido)));
         }
 
-        Partido &partido = partidos.at(nPartido);
+        Partido *partido = partidos.at(nPartido);
 
         if (cargo == stoi(campos[INDICE_CARGO])) {
             bool deferido = stoi(campos[INDICE_DEFERIDO]) == 2 || stoi(campos[INDICE_DEFERIDO]) == 16;
@@ -93,18 +97,21 @@ void _processarLinhaCandidato(vector<string> &campos, map<int, Partido> &partido
             Genero genero = intToGenero(stoi(campos[INDICE_GENERO]));
             Data dataNasc = campos[INDICE_DATA_NASC].empty() ? Data() : Data(campos[INDICE_DATA_NASC]);
 
-            candidatos.insert(pair<int, Candidato>(nCandidato, Candidato(nCandidato, nomeCandidato, &partido, deferido, eleito, genero, tipoDstVts, dataNasc)));
+            Candidato *candidato = new Candidato(nCandidato, nomeCandidato, partido, deferido, eleito, genero, tipoDstVts, dataNasc);
+            candidatos.insert(pair<int, Candidato *>(nCandidato, candidato));
+            partido->addCandidato(*candidato);
         }
 
     } catch (exception &e) {
+        cout << "Erro ao processar linha do arquivo de candidatos: " << e.what() << endl;
     }
 }
 
 Eleicao *eleicaoFromCsv(string &nomeArquivo, int cargo, Data &dataEleicao) {
     ifstream inputStream(nomeArquivo);
     string linha;
-    map<int, Partido> partidos;
-    map<int, Candidato> candidatos;
+    map<int, Partido *> partidos = map<int, Partido *>();
+    map<int, Candidato *> candidatos = map<int, Candidato *>();
 
     getline(inputStream, linha); // cabeçalho
     while (getline(inputStream, linha)) {
@@ -117,11 +124,12 @@ Eleicao *eleicaoFromCsv(string &nomeArquivo, int cargo, Data &dataEleicao) {
         _processarLinhaCandidato(campos, partidos, candidatos, cargo);
     }
     inputStream.close();
+
     return new Eleicao(candidatos, partidos, cargo, dataEleicao);
 }
 
 map<int, int> *mapaVotacaoFromCsv(string &nomeArquivo, int cargo) {
-    map<int, int> *votos = new map<int, int>();
+    map<int, int> votos;
 
     ifstream file(nomeArquivo);
     string linha;
@@ -135,20 +143,23 @@ map<int, int> *mapaVotacaoFromCsv(string &nomeArquivo, int cargo) {
             campos.push_back(campo);
         }
 
-        int cargoLido = stoi(campos[INDICE_CARGO_VOTACAO].substr(1, campos[INDICE_CARGO_VOTACAO].length() - 1));
-
+        int cargoLido = stoi(campos[INDICE_CARGO_VOTACAO].substr(1, campos[INDICE_CARGO_VOTACAO].length() - 2));
         if (cargo == cargoLido) {
-            int numeroCandidato = stoi(campos[INDICE_NUMERO_CANDIDATO].substr(1, campos[INDICE_NUMERO_CANDIDATO].length() - 1));
-            int quantidadeVotos = stoi(campos[INDICE_QUANTIDADE_VOTOS].substr(1, campos[INDICE_QUANTIDADE_VOTOS].length() - 1));
+            int numeroCandidato = stoi(campos[INDICE_NUMERO_CANDIDATO].substr(1, campos[INDICE_NUMERO_CANDIDATO].length() - 2));
+            int quantidadeVotos = stoi(campos[INDICE_QUANTIDADE_VOTOS].substr(1, campos[INDICE_QUANTIDADE_VOTOS].length() - 2));
 
             if (numeroCandidato >= NUMERO_MINIMO_CANDIDATO && numeroCandidato <= NUMERO_MAXIMO_CANDIDATO) {
                 continue;
             }
 
-            (*votos)[numeroCandidato] += quantidadeVotos;
+            if (votos.count(numeroCandidato)) {
+                quantidadeVotos += votos.at(numeroCandidato);
+            }
+
+            votos.insert(pair<int, int>(numeroCandidato, quantidadeVotos));
         }
     }
 
     file.close();
-    return votos;
+    return new map<int, int>(votos);
 }

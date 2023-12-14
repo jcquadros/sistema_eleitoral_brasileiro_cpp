@@ -5,8 +5,9 @@
 using namespace std;
 
 #include "data.h"
-#include "genero.h"
-#include "tipoDestinoVotos.h"
+
+enum class Genero { MASCULINO = 2, FEMININO = 4 };
+enum class TipoDestinoVotos { VALIDO_LEGENDA, VALIDO_NOMINAL, INVALIDO };
 
 class Partido;
 

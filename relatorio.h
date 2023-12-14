@@ -4,9 +4,7 @@
 #include "candidato.h"
 #include "data.h"
 #include "eleicao.h"
-#include "genero.h"
 #include "partido.h"
-#include "tipoDestinoVotos.h"
 #include <string>
 #include <vector>
 

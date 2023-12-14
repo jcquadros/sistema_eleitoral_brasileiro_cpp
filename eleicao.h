@@ -12,15 +12,15 @@ using namespace std;
 
 class Eleicao {
   private:
-    std::map<int, Candidato> candidatos;
-    std::map<int, Partido> partidos;
+    std::map<int, Candidato *> candidatos;
+    std::map<int, Partido *> partidos;
     int cargo;
     Data data;
 
   public:
-    Eleicao(const std::map<int, Candidato> &candidatos, const std::map<int, Partido> &partidos, int cargo, const Data &data);
-    const std::map<int, Candidato> &getCandidatos() const;
-    const std::map<int, Partido> &getPartidos() const;
+    Eleicao(const std::map<int, Candidato *> &candidatos, const std::map<int, Partido *> &partidos, int cargo, const Data &data);
+    const std::map<int, Candidato *> &getCandidatos() const;
+    const std::map<int, Partido *> &getPartidos() const;
     const int &getCargo() const;
     const Data &getData() const;
 

@@ -12,11 +12,11 @@ using namespace std;
 
 Relatorio::Relatorio(Eleicao eleicao) : cargo(eleicao.getCargo()), data(eleicao.getData()) {
     for (const auto &candidato : eleicao.getCandidatos()) {
-        candidatos.push_back((Candidato)candidato.second);
+        candidatos.push_back(*(Candidato *)candidato.second);
     }
 
     for (const auto &partido : eleicao.getPartidos()) {
-        partidos.push_back((Partido)partido.second);
+        partidos.push_back(*(Partido *)partido.second);
     }
 
     sort(candidatos.begin(), candidatos.end(), [](const Candidato &a, const Candidato &b) { return a.getNumero() < b.getNumero(); });

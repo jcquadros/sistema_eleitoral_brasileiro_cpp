@@ -9,13 +9,16 @@ const string &Partido::getSigla() const { return sigla; }
 
 const int &Partido::getFederacao() const { return federacao; }
 
-const std::set<Candidato> &Partido::getCandidatos() const { return candidatos; }
+const std::vector<Candidato> &Partido::getCandidatos() const { return candidatos; }
 
 const int &Partido::getVotosLegenda() const { return votosLegenda; }
 
 const int &Partido::getVotosNominais() const { return votosNominais; }
 
-void Partido::addCandidato(Candidato &candidato) { candidatos.insert(candidato); }
+void Partido::addCandidato(Candidato &candidato) {
+    // cout << "addCandidato" << candidato.getNome() << endl;
+    candidatos.push_back(candidato);
+}
 
 void Partido::addVotosLegenda(int votosLegenda) { this->votosLegenda += votosLegenda; }
 
