@@ -227,7 +227,6 @@ void Relatorio::primeiroUltimoColocadosPorPartido() const {
         if (candidatosPartido.size() == 0) {
             continue;
         }
-        // o maior é o mais votado e em caso de desempate o mais velho
         Candidato *maxCandidato = candidatosPartido[0];
         Candidato *minCandidato = candidatosPartido[0];
         for (const auto &candidato : candidatosPartido) {
@@ -240,7 +239,7 @@ void Relatorio::primeiroUltimoColocadosPorPartido() const {
             } else {
                 if (candidato->getDataNascimento().getDia() < maxCandidato->getDataNascimento().getDia()) {
                     maxCandidato = candidato;
-                } else if (candidato->getDataNascimento().getDia() >= minCandidato->getDataNascimento().getDia()) {
+                } else if (candidato->getDataNascimento().getDia() > minCandidato->getDataNascimento().getDia()) {
                     minCandidato = candidato;
                 }
             }
