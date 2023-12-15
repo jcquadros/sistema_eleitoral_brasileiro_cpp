@@ -10,6 +10,15 @@
 
 using namespace std;
 
+/**
+ * Esta classe fornece vários relatórios relacionados a uma eleição.
+ */
+
+/*
+ * Constrói um objeto RelatoriosEleicao a partir de uma eleição.
+ *
+ * @param eleicao A eleição
+ */
 Relatorio::Relatorio(Eleicao eleicao) : cargo(eleicao.getCargo()), data(eleicao.getData()) {
 
     // ordenado em ordem decrescente do numero de votos e em caso de desempate os mais velhos tem prioridade
@@ -36,6 +45,11 @@ Relatorio::Relatorio(Eleicao eleicao) : cargo(eleicao.getCargo()), data(eleicao.
     });
 }
 
+/**
+ * Retorna o número de vagas para o cargo em disputa.
+ *
+ * @return O número de vagas
+ */
 const int Relatorio::numeroDeVagas() const {
     int count = 0;
     for (const auto &candidato : candidatos) {
@@ -46,12 +60,18 @@ const int Relatorio::numeroDeVagas() const {
     return count;
 }
 
+/**
+ * Imprime o número de vagas para o cargo em disputa.
+ */
 void Relatorio::numeroDeVagasEleicao() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
     cout << "Número de vagas: " << fixed << setprecision(0) << numeroDeVagas() << "\n" << endl;
 }
 
+/*
+ * Imprime os candidatos eleitos para o cargo em disputa.
+ */
 void Relatorio::candidatosEleitos() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -73,6 +93,9 @@ void Relatorio::candidatosEleitos() const {
     cout << endl;
 }
 
+/*
+ * Imprime os candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas).
+ */
 void Relatorio::candidatosMaisVotados() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -91,6 +114,9 @@ void Relatorio::candidatosMaisVotados() const {
 
     cout << endl;
 }
+/*
+ * Imprime os candidatos não eleitos que teriam sido eleitos se a votação fosse majoritária.
+ */
 
 void Relatorio::candidatosNaoEleitosEleitosMajoritariamente() const {
     locale brasilLocale("pt_BR.UTF-8");
@@ -110,6 +136,9 @@ void Relatorio::candidatosNaoEleitosEleitosMajoritariamente() const {
     cout << endl;
 }
 
+/*
+ * Imprime os candidatos eleitos que não teriam sido eleitos se a votação fosse majoritária.
+ */
 void Relatorio::candidatosEleitosNaoEleitosMajoritariamente() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -127,6 +156,9 @@ void Relatorio::candidatosEleitosNaoEleitosMajoritariamente() const {
     cout << endl;
 }
 
+/*
+ * Imprime a votacao de cada partido e o numero de candidatos eleitos.
+ */
 void Relatorio::votacaoPartidos() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -153,6 +185,9 @@ void Relatorio::votacaoPartidos() const {
     cout << endl;
 }
 
+/*
+ *Imprime os primeiros e últimos colocados de cada partido.
+ */
 void Relatorio::primeiroUltimoColocadosPorPartido() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -225,6 +260,9 @@ void Relatorio::primeiroUltimoColocadosPorPartido() const {
     cout << endl;
 }
 
+/**
+ * Imprime a distribuição dos candidatos eleitos por faixa etária.
+ */
 void Relatorio::eleitosPorFaixaEtaria() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -273,6 +311,9 @@ void Relatorio::eleitosPorFaixaEtaria() const {
          << endl;
 }
 
+/**
+ * Imprime a distribuição dos candidatos eleitos por gênero.
+ */
 void Relatorio::eleitosPorGenero() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
@@ -304,6 +345,9 @@ void Relatorio::eleitosPorGenero() const {
          << endl;
 }
 
+/*
+ * Imprime o total de votos válidos, o total de votos nominais e o total de votos de legenda.
+ */
 void Relatorio::totalDeVotos() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);

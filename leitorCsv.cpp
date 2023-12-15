@@ -21,6 +21,11 @@
 
 using namespace std;
 
+/**
+ * Converte um inteiro para o enum Genero.
+ *@param genero O inteiro a ser convertido.
+ *@return O enum Genero correspondente ao inteiro.
+ */
 Genero intToGenero(const int &genero) {
     if (genero == 2) {
         return Genero::MASCULINO;
@@ -29,6 +34,11 @@ Genero intToGenero(const int &genero) {
     }
 }
 
+/**
+ * Converte uma string para o enum TipoDestinoVotos.
+ *@param tipoDestinoVotos A string a ser convertida.
+ *@return O enum TipoDestinoVotos correspondente à string.
+ */
 TipoDestinoVotos strToTipoDestinoVotos(const string &tipoDestinoVotos) {
     if (tipoDestinoVotos == "Válido (legenda)") {
         return TipoDestinoVotos::VALIDO_LEGENDA;
@@ -39,7 +49,11 @@ TipoDestinoVotos strToTipoDestinoVotos(const string &tipoDestinoVotos) {
     }
 }
 
-// nao houve outra solução a senão fazer cópia ou eu gastaria muitas linhas de código
+/**
+ * Converte uma string ISO-8859-1 para UTF-8.
+ *@param str A string a ser convertida.
+ *@return A string convertida.
+ */
 string iso_8859_1_to_utf8(string str) {
 
     // adaptado de: https://stackoverflow.com/a/39884120 :-)
@@ -60,6 +74,13 @@ string iso_8859_1_to_utf8(string str) {
     return strOut;
 }
 
+/**
+ * Processa uma linha do arquivo de candidatos.
+ *@param campos Os campos da linha.
+ *@param partidos O mapa de partidos.
+ *@param candidatos O mapa de candidatos.
+ *@param cargo O cargo da eleição.
+ */
 void _processarLinhaCandidato(vector<string> &campos, unordered_map<int, Partido *> &partidos, unordered_map<int, Candidato *> &candidatos, int cargo) {
     campos[INDICE_CARGO] = iso_8859_1_to_utf8(campos[INDICE_CARGO].substr(1, campos[INDICE_CARGO].length() - 2));
     campos[INDICE_N_PARTIDO] = iso_8859_1_to_utf8(campos[INDICE_N_PARTIDO].substr(1, campos[INDICE_N_PARTIDO].length() - 2));
@@ -108,6 +129,13 @@ void _processarLinhaCandidato(vector<string> &campos, unordered_map<int, Partido
     }
 }
 
+/**
+ * Lê um arquivo CSV de candidatos e retorna uma eleição.
+ *@param nomeArquivo O nome do arquivo CSV.
+ *@param cargo O cargo da eleição.
+ *@param dataEleicao A data da eleição.
+ *@return A eleição.
+ */
 Eleicao *eleicaoFromCsv(string &nomeArquivo, int cargo, Data &dataEleicao) {
     ifstream inputStream(nomeArquivo);
     string linha;
@@ -129,6 +157,12 @@ Eleicao *eleicaoFromCsv(string &nomeArquivo, int cargo, Data &dataEleicao) {
     return new Eleicao(candidatos, partidos, cargo, dataEleicao);
 }
 
+/**
+ * Lê um arquivo CSV de votação e retorna um mapa de votos.
+ *@param nomeArquivo O nome do arquivo CSV.
+ *@param cargo O cargo da eleição.
+ *@return O mapa de votos.
+ */
 unordered_map<int, int> *mapaVotacaoFromCsv(string &nomeArquivo, int cargo) {
     unordered_map<int, int> votos;
 
