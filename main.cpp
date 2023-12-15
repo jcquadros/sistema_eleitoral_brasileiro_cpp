@@ -23,16 +23,16 @@ int getCargoFromArgs(const string &arg) {
 }
 
 void printRelatorios(const Relatorio &r) {
-    cout << r.numeroDeVagasEleicao() << endl;
-    cout << r.candidatosEleitos() << endl;
-    cout << r.candidatosMaisVotados() << endl;
-    cout << r.candidatosNaoEleitosEleitosMajoritariamente() << endl;
-    cout << r.candidatosEleitosNaoEleitosMajoritariamente() << endl;
-    cout << r.votacaoPartidos() << endl;
-    cout << r.primeiroUltimoColocadosPorPartido() << endl;
-    cout << r.eleitosPorFaixaEtaria() << endl;
-    cout << r.eleitosPorGenero() << endl;
-    cout << r.totalDeVotos() << endl;
+    r.numeroDeVagasEleicao();
+    r.candidatosEleitos();
+    r.candidatosMaisVotados();
+    r.candidatosNaoEleitosEleitosMajoritariamente();
+    r.candidatosEleitosNaoEleitosMajoritariamente();
+    r.votacaoPartidos();
+    r.primeiroUltimoColocadosPorPartido();
+    r.eleitosPorFaixaEtaria();
+    r.eleitosPorGenero();
+    r.totalDeVotos();
 }
 
 int main(int argc, char *argv[]) {
@@ -63,11 +63,11 @@ int main(int argc, char *argv[]) {
     // }
     cout << "oiii" << endl;
 
-    unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
-    eleicao->processaVotacao(*mapaVotacao);
-    // for (auto &vote : *mapaVotacao) {
-    //     cout << vote.first << " " << vote.second << endl;
-    // }
+    // unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
+    //  eleicao->processaVotacao(*mapaVotacao);
+    //   for (auto &vote : *mapaVotacao) {
+    //       cout << vote.first << " " << vote.second << endl;
+    //   }
 
     // for (auto &candidato : eleicao->getCandidatos()) {
     //     cout << candidato.second->getNome() << " " << candidato.second->getVotosNominais() << endl;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
         delete partido.second;
     }
     delete eleicao;
-    delete mapaVotacao;
+    // delete mapaVotacao;
 
     return 0;
 }

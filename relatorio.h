@@ -20,16 +20,16 @@ class Relatorio {
 
   public:
     Relatorio(Eleicao eleicao);
-    const string numeroDeVagasEleicao() const;
-    const string candidatosEleitos() const;
-    const string candidatosMaisVotados() const;
-    const string candidatosNaoEleitosEleitosMajoritariamente() const;
-    const string candidatosEleitosNaoEleitosMajoritariamente() const;
-    const string votacaoPartidos() const;
-    const string primeiroUltimoColocadosPorPartido() const;
-    const string eleitosPorFaixaEtaria() const;
-    const string eleitosPorGenero() const;
-    const string totalDeVotos() const;
+    void numeroDeVagasEleicao() const;
+    void candidatosEleitos() const;
+    void candidatosMaisVotados() const;
+    void candidatosNaoEleitosEleitosMajoritariamente() const;
+    void candidatosEleitosNaoEleitosMajoritariamente() const;
+    void votacaoPartidos() const;
+    void primeiroUltimoColocadosPorPartido() const;
+    void eleitosPorFaixaEtaria() const;
+    void eleitosPorGenero() const;
+    void totalDeVotos() const;
 };
 
 #endif // RELATORIOS_H

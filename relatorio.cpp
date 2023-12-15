@@ -22,7 +22,7 @@ Relatorio::Relatorio(Eleicao eleicao) : cargo(eleicao.getCargo()), data(eleicao.
         // cout << partido.second->getSigla() << endl;
         partidos.push_back(*(Partido *)partido.second);
     }
-    cout << "Salvou" << endl;
+    // cout << "Salvou" << endl;
 
     sort(candidatos.begin(), candidatos.end(), [](Candidato &a, Candidato &b) {
         if (a.getVotosNominais() != b.getVotosNominais()) {
@@ -38,16 +38,16 @@ Relatorio::Relatorio(Eleicao eleicao) : cargo(eleicao.getCargo()), data(eleicao.
         return a.getNumero() < b.getNumero();
     });
 
-    cout << "Ordenou" << endl;
+    // cout << "Ordenou" << endl;
 
-    for (const auto &candidato : candidatos) {
-        cout << candidato.getNome() << " Numero de votos: " << candidato.getVotosNominais()
-             << " Data de nascimento: " << candidato.getDataNascimento().getDataNascimentoStr() << endl;
-    }
+    // for (const auto &candidato : candidatos) {
+    //     cout << candidato.getNome() << " Numero de votos: " << candidato.getVotosNominais()
+    //          << " Data de nascimento: " << candidato.getDataNascimento().getDataNascimentoStr() << endl;
+    // }
 
-    for (const auto &partido : partidos) {
-        cout << partido.getNumero() << " - " << partido.getSigla() << " Numero de votos: " << partido.getVotosLegenda() + partido.getVotosNominais() << endl;
-    }
+    // for (const auto &partido : partidos) {
+    //     cout << partido.getNumero() << " - " << partido.getSigla() << " Numero de votos: " << partido.getVotosLegenda() + partido.getVotosNominais() << endl;
+    // }
 }
 
 const int Relatorio::numeroDeVagas() const {
@@ -60,10 +60,12 @@ const int Relatorio::numeroDeVagas() const {
     return count;
 }
 
-const string Relatorio::numeroDeVagasEleicao() const { return "Número de vagas: " + to_string(numeroDeVagas()) + "\n"; }
+void Relatorio::numeroDeVagasEleicao() const { cout << "Número de vagas: " << numeroDeVagas() << "\n" << endl; }
 
-const string Relatorio::candidatosEleitos() const {
-    string response = this->cargo == 6 ? "Deputados federais eleitos:\n" : "Deputados estaduais eleitos:\n";
+void Relatorio::candidatosEleitos() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+    cout << (this->cargo == 6 ? "Deputados federais eleitos:\n" : "Deputados estaduais eleitos:\n") << endl;
     int i = 0;
 
     vector<Candidato> candidatosEleitos;
@@ -74,69 +76,71 @@ const string Relatorio::candidatosEleitos() const {
     }
 
     for (const auto &candidato : candidatosEleitos) {
-        response += to_string(++i) + " - ";
         Partido *partido = candidato.getPartido();
-        response += (partido->getFederacao() != -1) ? "*" : "";
-        response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
+        cout << ++i << " - " << (partido->getFederacao() != -1 ? "*" : "");
+        cout << candidato.getNome() << " (" + partido->getSigla() << ", " << candidato.getVotosNominais() << " votos)" << endl;
     }
-
-    return response;
+    cout << endl;
 }
 
-const string Relatorio::candidatosMaisVotados() const {
-    string response = "Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):\n";
+void Relatorio::candidatosMaisVotados() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+
+    cout << "Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):" << endl;
     int i = 0;
 
     vector<Candidato> candidatosOrdenadosVotos = candidatos;
     candidatosOrdenadosVotos.resize(numeroDeVagas());
 
     for (const auto &candidato : candidatosOrdenadosVotos) {
-        response += to_string(++i) + " - ";
         Partido *partido = candidato.getPartido();
-        response += (partido->getFederacao() != -1) ? "*" : "";
-        response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
+        cout << ++i << " - " << (partido->getFederacao() != -1 ? "*" : "");
+        cout << candidato.getNome() << " (" + partido->getSigla() << ", " << candidato.getVotosNominais() << " votos)" << endl;
     }
 
-    return response;
+    cout << endl;
 }
 
-const string Relatorio::candidatosNaoEleitosEleitosMajoritariamente() const {
-    string response = "Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:\n";
-    response += "(com sua posição no ranking de mais votados)\n";
+void Relatorio::candidatosNaoEleitosEleitosMajoritariamente() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+    cout << "Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:" << endl;
+    cout << "(com sua posição no ranking de mais votados)" << endl;
     int numDeVagas = numeroDeVagas();
 
     for (int i = 0; i < numDeVagas; i++) {
         if (!candidatos[i].isEleito()) {
-            response += to_string(i + 1) + " - ";
             const Candidato &candidato = candidatos[i];
             Partido *partido = candidato.getPartido();
-            response += (partido->getFederacao() != -1) ? "*" : "";
-            response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
+            cout << (i + 1) << " - " << (partido->getFederacao() != -1 ? "*" : "");
+            cout << candidato.getNome() << " (" + partido->getSigla() << ", " << candidato.getVotosNominais() << " votos)" << endl;
         }
     }
-
-    return response;
+    cout << endl;
 }
 
-const string Relatorio::candidatosEleitosNaoEleitosMajoritariamente() const {
-    string response = "Eleitos, que se beneficiaram do sistema proporcional:\n";
-    response += "(com sua posição no ranking de mais votados)\n";
+void Relatorio::candidatosEleitosNaoEleitosMajoritariamente() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+    cout << "Eleitos, que se beneficiaram do sistema proporcional:" << endl;
+    cout << "(com sua posição no ranking de mais votados)" << endl;
 
     for (int i = numeroDeVagas(); i < (long int)candidatos.size(); i++) {
         if (candidatos[i].isEleito()) {
-            response += to_string(i + 1) + " - ";
             const Candidato &candidato = candidatos[i];
             Partido *partido = candidato.getPartido();
-            response += (partido->getFederacao() != -1) ? "*" : "";
-            response += candidato.getNome() + " (" + partido->getSigla() + ", " + to_string(candidato.getVotosNominais()) + " votos)\n";
+            cout << (i + 1) << " - " << (partido->getFederacao() != -1 ? "*" : "");
+            cout << candidato.getNome() << " (" << partido->getSigla() << ", " << candidato.getVotosNominais() << " votos)" << endl;
         }
     }
-    return response;
+    cout << endl;
 }
 
-const string Relatorio::votacaoPartidos() const {
-    // locale loc("pt_BR.UTF-8");
-    string response = "Votação dos partidos e número de candidatos eleitos:\n";
+void Relatorio::votacaoPartidos() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+    cout << "Votação dos partidos e número de candidatos eleitos:" << endl;
     int i = 0;
     for (const auto &partido : partidos) {
         int candEleitos = 0;
@@ -150,18 +154,19 @@ const string Relatorio::votacaoPartidos() const {
         int totalDeVotosLeg = partido.getVotosLegenda();
         int totalDeVotos = totalDeVotosNom + totalDeVotosLeg;
 
-        response += to_string(++i) + " - " + partido.getSigla() + " - " + to_string(partido.getNumero()) + ", ";
-        response += to_string(totalDeVotos) + (totalDeVotos > 1 ? " votos (" : " voto (");
-        response += to_string(totalDeVotosNom) + (totalDeVotosNom > 1 ? " nominais e " : " nominal e ");
-        response += to_string(totalDeVotosLeg) + (totalDeVotosLeg > 1 ? " de legenda), " : " de legenda), ");
-        response += to_string(candEleitos) + (candEleitos > 1 ? " candidatos eleitos\n" : " candidato eleito\n");
+        cout << (++i) << " - " << partido.getSigla() << " - " << partido.getNumero() << ", ";
+        cout << totalDeVotos << (totalDeVotos > 1 ? " votos (" : " voto (");
+        cout << totalDeVotosNom << (totalDeVotosNom > 1 ? " nominais e " : " nominal e ");
+        cout << totalDeVotosLeg << (totalDeVotosLeg > 1 ? " de legenda), " : " de legenda), ");
+        cout << candEleitos << (candEleitos > 1 ? " candidatos eleitos\n" : " candidato eleito") << endl;
     }
-    return response;
+    cout << endl;
 }
 
-const string Relatorio::primeiroUltimoColocadosPorPartido() const {
-    // locale loc("pt_BR.UTF-8");
-    string response = "Primeiro e último colocados de cada partido:\n";
+void Relatorio::primeiroUltimoColocadosPorPartido() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+    cout << "Primeiro e último colocados de cada partido:" << endl;
     int i = 0;
 
     vector<Partido> partidosOrdenados;
@@ -219,7 +224,6 @@ const string Relatorio::primeiroUltimoColocadosPorPartido() const {
             continue;
         }
         // o maior é o mais votado e em caso de desempate o mais velho
-        response += to_string(++i) + " - " + partido.getSigla() + " - " + to_string(partido.getNumero()) + ", ";
         Candidato *maxCandidato = candidatosPartido[0];
         Candidato *minCandidato = candidatosPartido[0];
         for (const auto &candidato : candidatosPartido) {
@@ -238,18 +242,20 @@ const string Relatorio::primeiroUltimoColocadosPorPartido() const {
             }
         }
 
-        response += maxCandidato->getNome() + " (" + to_string(maxCandidato->getNumero()) + ", " + to_string(maxCandidato->getVotosNominais()) +
-                    (maxCandidato->getVotosNominais() > 1 ? " votos)" : " voto)");
-        // o menor é o menos votado e em caso de desempate o mais novo
+        cout << (++i) << " - " << partido.getSigla() << " - " << partido.getNumero() << ", ";
+        cout << maxCandidato->getNome() << " (" << maxCandidato->getNumero() << ", " << maxCandidato->getVotosNominais()
+             << (maxCandidato->getVotosNominais() > 1 ? " votos)" : " voto)");
 
-        response += " / " + minCandidato->getNome() + " (" + to_string(minCandidato->getNumero()) + ", " + to_string(minCandidato->getVotosNominais()) +
-                    (minCandidato->getVotosNominais() > 1 ? " votos)\n" : " voto)\n");
+        cout << " / " << minCandidato->getNome() << " (" << minCandidato->getNumero() << ", " << minCandidato->getVotosNominais()
+             << (minCandidato->getVotosNominais() > 1 ? " votos)\n" : " voto)") << endl;
     }
-    return response;
+    cout << endl;
 }
 
-const string Relatorio::eleitosPorFaixaEtaria() const {
-    // locale loc("pt_BR.UTF-8");
+void Relatorio::eleitosPorFaixaEtaria() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+
     vector<Candidato> candidatosEleitos;
     for (const auto &candidato : candidatos) {
         if (candidato.isEleito()) {
@@ -280,18 +286,18 @@ const string Relatorio::eleitosPorFaixaEtaria() const {
         }
     }
 
-    string response = "Eleitos, por faixa etária (na data da eleição):\n";
-    response += "      Idade < 30: " + to_string(eleitosAte30) + " (" + to_string(eleitosAte30 / totalEleitos) + ")\n";
-    response += "30 <= Idade < 40: " + to_string(eleitos30a40) + " (" + to_string(eleitos30a40 / totalEleitos) + ")\n";
-    response += "40 <= Idade < 50: " + to_string(eleitos40a50) + " (" + to_string(eleitos40a50 / totalEleitos) + ")\n";
-    response += "50 <= Idade < 60: " + to_string(eleitos50a60) + " (" + to_string(eleitos50a60 / totalEleitos) + ")\n";
-    response += "60 <= Idade     : " + to_string(eleitos60mais) + " (" + to_string(eleitos60mais / totalEleitos) + ")\n";
-
-    return response;
+    cout << "Eleitos, por faixa etária (na data da eleição):" << endl;
+    cout << fixed << setprecision(2);
+    cout << "      Idade < 30: " << (eleitosAte30) << " (" << (eleitosAte30 / totalEleitos * 100) << "%)" << endl;
+    cout << "30 <= Idade < 40: " << (eleitos30a40) << " (" << (eleitos30a40 / totalEleitos * 100) << "%)" << endl;
+    cout << "40 <= Idade < 50: " << (eleitos40a50) << " (" << (eleitos40a50 / totalEleitos * 100) << "%)" << endl;
+    cout << "50 <= Idade < 60: " << (eleitos50a60) << " (" << (eleitos50a60 / totalEleitos * 100) << "%)" << endl;
+    cout << "60 <= Idade     : " << (eleitos60mais) << " (" << (eleitos60mais / totalEleitos * 100) << "%)\n" << endl;
 }
 
-const string Relatorio::eleitosPorGenero() const {
-    // locale loc("pt_BR.UTF-8");
+void Relatorio::eleitosPorGenero() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
     vector<Candidato> candidatosEleitos;
     for (const auto &candidato : candidatos) {
         if (candidato.isEleito()) {
@@ -311,14 +317,15 @@ const string Relatorio::eleitosPorGenero() const {
         }
     }
 
-    string response = "Eleitos, por gênero:\n";
-    response += "Feminino:  " + to_string(eleitosFeminino) + " (" + to_string(eleitosFeminino / totalEleitos) + ")\n";
-    response += "Masculino: " + to_string(eleitosMasculino) + " (" + to_string(eleitosMasculino / totalEleitos) + ")\n";
-    return response;
+    cout << "Eleitos, por gênero:" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Feminino:  " << eleitosFeminino << " (" << (eleitosFeminino / totalEleitos * 100) << "%)" << endl;
+    cout << "Masculino: " << eleitosMasculino << " (" << (eleitosMasculino / totalEleitos * 100) << "%)\n" << endl;
 }
 
-const string Relatorio::totalDeVotos() const {
-    // locale loc("pt_BR.UTF-8");
+void Relatorio::totalDeVotos() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
     double totalDeVotos = 0;
     int totalDeVotosNominais = 0;
     int totalDeVotosLegenda = 0;
@@ -329,9 +336,7 @@ const string Relatorio::totalDeVotos() const {
 
     totalDeVotos = totalDeVotosNominais + totalDeVotosLegenda;
 
-    string response = "Total de votos válidos:    " + to_string(totalDeVotos) + "\n";
-    response += "Total de votos nominais:   " + to_string(totalDeVotosNominais) + " (" + to_string(totalDeVotosNominais / totalDeVotos) + ")\n";
-    response += "Total de votos de legenda: " + to_string(totalDeVotosLegenda) + " (" + to_string(totalDeVotosLegenda / totalDeVotos) + ")\n";
-
-    return response;
+    cout << "Total de votos válidos:    " << totalDeVotos << endl;
+    cout << "Total de votos nominais:   " << totalDeVotosNominais << " (" << (totalDeVotosNominais / totalDeVotos * 100) << "%)" << endl;
+    cout << "Total de votos de legenda: " << totalDeVotosLegenda << " (" << (totalDeVotosLegenda / totalDeVotos * 100) << "%)\n" << endl;
 }
