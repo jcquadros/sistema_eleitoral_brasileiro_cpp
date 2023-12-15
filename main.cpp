@@ -61,10 +61,9 @@ int main(int argc, char *argv[]) {
     // for (auto &partido : eleicao->getPartidos()) {
     //     cout << partido.second->getSigla() << endl;
     // }
-    cout << "oiii" << endl;
 
-    // unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
-    //  eleicao->processaVotacao(*mapaVotacao);
+    unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
+    eleicao->processaVotacao(*mapaVotacao);
     //   for (auto &vote : *mapaVotacao) {
     //       cout << vote.first << " " << vote.second << endl;
     //   }
