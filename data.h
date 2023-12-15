@@ -16,15 +16,12 @@ class Data {
     const int &getDia() const;
     const int &getMes() const;
     const int &getAno() const;
-    bool isLessThan(Data &data) const;
-    // numero de anos entre duas datas
     int numeroAnos(const Data &data) const;
-    int numeroDias(Data &data) const;
-    string getDataNascimentoStr() const;
+    bool operator<(const Data& data) const;
+    bool operator==(const Data& data) const;
+    bool operator>(const Data& data) const;
 
-  private:
-    int ehBissexto(int &ano) const;
-    int numeroDiasMes(int &mes, int &ano) const;
+  
 };
 
 #endif // DATA_H

@@ -29,10 +29,24 @@ void Candidato::setVotosNominais(int votosNominais) { this->votosNominais = voto
 
 void Candidato::addVotosNominais(int votosNominais) { this->votosNominais += votosNominais; }
 
-bool candidatoCompare(Candidato &o1, Candidato &o2) {
-    if (o1.getVotosNominais() != o2.getVotosNominais()) {
-        return o2.getVotosNominais() < o1.getVotosNominais();
-    } else {
-        return o1.getDataNascimento().getDia() < o2.getDataNascimento().getDia();
+bool Candidato::operator>(const Candidato &candidato) const {
+    if (this->votosNominais > candidato.getVotosNominais()) {
+        return true;
+    } else if (this->votosNominais == candidato.getVotosNominais()) {
+        return this->dataNascimento.operator<(candidato.getDataNascimento());
     }
+    return false;
+}
+
+bool Candidato::operator==(const Candidato &candidato) const {
+    return this->votosNominais == candidato.getVotosNominais() && this->dataNascimento.operator==(candidato.getDataNascimento());
+}
+
+bool Candidato::operator<(const Candidato &candidato) const {
+    if (this->votosNominais < candidato.getVotosNominais()) {
+        return true;
+    } else if (this->votosNominais == candidato.getVotosNominais()) {
+        return this->dataNascimento.operator>(candidato.getDataNascimento());
+    }
+    return false;
 }

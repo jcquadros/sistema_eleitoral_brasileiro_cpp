@@ -54,27 +54,8 @@ int main(int argc, char *argv[]) {
     Data data(dataStr);
     Eleicao *eleicao = eleicaoFromCsv(caminhoArquivoCandidatos, cargo, data);
 
-    // for (auto &candidato : eleicao->getCandidatos()) {
-    //     cout << candidato.second->getNome() << endl;
-    // }
-
-    // for (auto &partido : eleicao->getPartidos()) {
-    //     cout << partido.second->getSigla() << endl;
-    // }
-
     unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
     eleicao->processaVotacao(*mapaVotacao);
-    //    for (auto &vote : *mapaVotacao) {
-    //        cout << vote.first << " " << vote.second << endl;
-    //    }
-
-    // for (auto &candidato : eleicao->getCandidatos()) {
-    //     cout << candidato.second->getNome() << " " << candidato.second->getVotosNominais() << endl;
-    // }
-
-    // for (auto &partido : eleicao->getPartidos()) {
-    //     cout << partido.second->getSigla() << " " << partido.second->getVotosLegenda() << " " << partido.second->getVotosNominais() << endl;
-    // }
 
     Relatorio r(*eleicao);
     printRelatorios(r);

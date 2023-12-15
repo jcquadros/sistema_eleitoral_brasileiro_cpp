@@ -27,6 +27,9 @@ class Partido {
     void addCandidato(Candidato *candidato);
     void addVotosLegenda(int votosLegenda);
     void addVotosNominais(int numeroVotos);
+    bool operator>(const Partido &partido) const;
+    bool operator==(const Partido &partido) const;
+    bool operator<(const Partido &partido) const;
 };
 
 #endif // PARTIDO_H

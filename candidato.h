@@ -37,8 +37,9 @@ class Candidato {
     const Data &getDataNascimento() const;
     void setVotosNominais(int votosNominais);
     void addVotosNominais(int votosNominais);
+    bool operator>(const Candidato &candidato) const;
+    bool operator==(const Candidato &candidato) const;
+    bool operator<(const Candidato &candidato) const;
 };
 
 #endif // CANDIDATO_H
-
-bool candidatoCompare(Candidato &o1, Candidato &o2);

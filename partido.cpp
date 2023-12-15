@@ -24,9 +24,24 @@ void Partido::addVotosLegenda(int votosLegenda) { this->votosLegenda += votosLeg
 
 void Partido::addVotosNominais(int numeroVotos) { this->votosNominais += numeroVotos; }
 
-int partidoCompare(Partido &o1, Partido &o2) {
-    if (o1.getVotosLegenda() + o1.getVotosNominais() != o2.getVotosLegenda() + o2.getVotosNominais()) {
-        return (o2.getVotosLegenda() + o2.getVotosNominais()) - (o1.getVotosLegenda() + o1.getVotosNominais());
+bool Partido::operator>(const Partido &partido) const {
+    if (this->votosNominais + this->votosLegenda > partido.getVotosNominais() + partido.getVotosLegenda()) {
+        return true;
+    } else if (this->votosNominais + this->votosLegenda == partido.getVotosNominais() + partido.getVotosLegenda()) {
+        return this->numero < partido.getNumero();
     }
-    return o1.getNumero() - o2.getNumero();
+    return false;
+}
+
+bool Partido::operator==(const Partido &partido) const {
+    return this->votosNominais + this->votosLegenda == partido.getVotosNominais() + partido.getVotosLegenda() && this->numero == partido.getNumero();
+}
+
+bool Partido::operator<(const Partido &partido) const {
+    if (this->votosNominais + this->votosLegenda < partido.getVotosNominais() + partido.getVotosLegenda()) {
+        return true;
+    } else if (this->votosNominais + this->votosLegenda == partido.getVotosNominais() + partido.getVotosLegenda()) {
+        return this->numero > partido.getNumero();
+    }
+    return false;
 }
