@@ -2,10 +2,10 @@
 #include "candidato.h"
 #include "eleicao.h"
 #include "partido.h"
-//#include <locale>
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <locale>
 #include <vector>
 
 using namespace std;
@@ -158,7 +158,7 @@ void Relatorio::votacaoPartidos() const {
         int totalDeVotosLeg = partido.getVotosLegenda();
         int totalDeVotos = totalDeVotosNom + totalDeVotosLeg;
 
-        cout << (++i) << " - " << partido.getSigla() << " - " << partido.getNumero() << ", ";
+        cout << (++i) << " - " << partido.getSigla() << " - " << to_string(partido.getNumero()) << ", ";
         cout << totalDeVotos << (totalDeVotos > 1 ? " votos (" : " voto (");
         cout << totalDeVotosNom << (totalDeVotosNom > 1 ? " nominais e " : " nominal e ");
         cout << totalDeVotosLeg << (totalDeVotosLeg > 1 ? " de legenda), " : " de legenda), ");
@@ -246,11 +246,11 @@ void Relatorio::primeiroUltimoColocadosPorPartido() const {
             }
         }
 
-        cout << (++i) << " - " << partido.getSigla() << " - " << partido.getNumero() << ", ";
-        cout << maxCandidato->getNome() << " (" << maxCandidato->getNumero() << ", " << maxCandidato->getVotosNominais()
+        cout << (++i) << " - " << partido.getSigla() << " - " << to_string(partido.getNumero()) << ", ";
+        cout << maxCandidato->getNome() << " (" << to_string(maxCandidato->getNumero()) << ", " << maxCandidato->getVotosNominais()
              << (maxCandidato->getVotosNominais() > 1 ? " votos)" : " voto)");
 
-        cout << " / " << minCandidato->getNome() << " (" << minCandidato->getNumero() << ", " << minCandidato->getVotosNominais()
+        cout << " / " << minCandidato->getNome() << " (" << to_string(minCandidato->getNumero()) << ", " << minCandidato->getVotosNominais()
              << (minCandidato->getVotosNominais() > 1 ? " votos)" : " voto)") << endl;
     }
     cout << endl;
