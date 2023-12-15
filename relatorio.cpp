@@ -233,13 +233,19 @@ void Relatorio::primeiroUltimoColocadosPorPartido() const {
             if (candidato->getVotosNominais() != maxCandidato->getVotosNominais()) {
                 if (candidato->getVotosNominais() > maxCandidato->getVotosNominais()) {
                     maxCandidato = candidato;
-                } else if (candidato->getVotosNominais() <= minCandidato->getVotosNominais()) {
-                    minCandidato = candidato;
                 }
             } else {
                 if (candidato->getDataNascimento().getDia() < maxCandidato->getDataNascimento().getDia()) {
                     maxCandidato = candidato;
-                } else if (candidato->getDataNascimento().getDia() > minCandidato->getDataNascimento().getDia()) {
+                }
+            }
+
+            if (candidato->getVotosNominais() != minCandidato->getVotosNominais()) {
+                if (candidato->getVotosNominais() < minCandidato->getVotosNominais()) {
+                    minCandidato = candidato;
+                }
+            } else {
+                if (candidato->getDataNascimento().getDia() > minCandidato->getDataNascimento().getDia()) {
                     minCandidato = candidato;
                 }
             }
