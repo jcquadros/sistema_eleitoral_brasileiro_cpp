@@ -1,4 +1,5 @@
 #include "leitorCsv.h"
+#include <cstdint>
 
 #define INDICE_CARGO 13
 #define INDICE_N_PARTIDO 27
