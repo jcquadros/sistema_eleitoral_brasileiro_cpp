@@ -64,9 +64,9 @@ int main(int argc, char *argv[]) {
 
     unordered_map<int, int> *mapaVotacao = mapaVotacaoFromCsv(caminhoArquivoVotacao, cargo);
     eleicao->processaVotacao(*mapaVotacao);
-    //   for (auto &vote : *mapaVotacao) {
-    //       cout << vote.first << " " << vote.second << endl;
-    //   }
+    //    for (auto &vote : *mapaVotacao) {
+    //        cout << vote.first << " " << vote.second << endl;
+    //    }
 
     // for (auto &candidato : eleicao->getCandidatos()) {
     //     cout << candidato.second->getNome() << " " << candidato.second->getVotosNominais() << endl;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
         delete partido.second;
     }
     delete eleicao;
-    // delete mapaVotacao;
+    delete mapaVotacao;
 
     return 0;
 }

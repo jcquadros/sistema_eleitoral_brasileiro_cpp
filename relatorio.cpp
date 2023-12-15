@@ -2,10 +2,10 @@
 #include "candidato.h"
 #include "eleicao.h"
 #include "partido.h"
+//#include <locale>
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
-#include <locale>
 #include <vector>
 
 using namespace std;
@@ -60,12 +60,16 @@ const int Relatorio::numeroDeVagas() const {
     return count;
 }
 
-void Relatorio::numeroDeVagasEleicao() const { cout << "Número de vagas: " << numeroDeVagas() << "\n" << endl; }
+void Relatorio::numeroDeVagasEleicao() const {
+    locale brasilLocale("pt_BR.UTF-8");
+    cout.imbue(brasilLocale);
+    cout << "Número de vagas: " << fixed << setprecision(0) << numeroDeVagas() << "\n" << endl;
+}
 
 void Relatorio::candidatosEleitos() const {
     locale brasilLocale("pt_BR.UTF-8");
     cout.imbue(brasilLocale);
-    cout << (this->cargo == 6 ? "Deputados federais eleitos:\n" : "Deputados estaduais eleitos:\n") << endl;
+    cout << (this->cargo == 6 ? "Deputados federais eleitos:" : "Deputados estaduais eleitos:") << endl;
     int i = 0;
 
     vector<Candidato> candidatosEleitos;
@@ -158,7 +162,7 @@ void Relatorio::votacaoPartidos() const {
         cout << totalDeVotos << (totalDeVotos > 1 ? " votos (" : " voto (");
         cout << totalDeVotosNom << (totalDeVotosNom > 1 ? " nominais e " : " nominal e ");
         cout << totalDeVotosLeg << (totalDeVotosLeg > 1 ? " de legenda), " : " de legenda), ");
-        cout << candEleitos << (candEleitos > 1 ? " candidatos eleitos\n" : " candidato eleito") << endl;
+        cout << candEleitos << (candEleitos > 1 ? " candidatos eleitos" : " candidato eleito") << endl;
     }
     cout << endl;
 }
@@ -247,7 +251,7 @@ void Relatorio::primeiroUltimoColocadosPorPartido() const {
              << (maxCandidato->getVotosNominais() > 1 ? " votos)" : " voto)");
 
         cout << " / " << minCandidato->getNome() << " (" << minCandidato->getNumero() << ", " << minCandidato->getVotosNominais()
-             << (minCandidato->getVotosNominais() > 1 ? " votos)\n" : " voto)") << endl;
+             << (minCandidato->getVotosNominais() > 1 ? " votos)" : " voto)") << endl;
     }
     cout << endl;
 }
@@ -287,12 +291,17 @@ void Relatorio::eleitosPorFaixaEtaria() const {
     }
 
     cout << "Eleitos, por faixa etária (na data da eleição):" << endl;
-    cout << fixed << setprecision(2);
-    cout << "      Idade < 30: " << (eleitosAte30) << " (" << (eleitosAte30 / totalEleitos * 100) << "%)" << endl;
-    cout << "30 <= Idade < 40: " << (eleitos30a40) << " (" << (eleitos30a40 / totalEleitos * 100) << "%)" << endl;
-    cout << "40 <= Idade < 50: " << (eleitos40a50) << " (" << (eleitos40a50 / totalEleitos * 100) << "%)" << endl;
-    cout << "50 <= Idade < 60: " << (eleitos50a60) << " (" << (eleitos50a60 / totalEleitos * 100) << "%)" << endl;
-    cout << "60 <= Idade     : " << (eleitos60mais) << " (" << (eleitos60mais / totalEleitos * 100) << "%)\n" << endl;
+    cout << "      Idade < 30: " << (eleitosAte30) << " (" << fixed << setprecision(2) << (eleitosAte30 / totalEleitos * 100) << fixed << setprecision(0)
+         << "%)" << endl;
+    cout << "30 <= Idade < 40: " << (eleitos30a40) << " (" << fixed << setprecision(2) << (eleitos30a40 / totalEleitos * 100) << fixed << setprecision(0)
+         << "%)" << endl;
+    cout << "40 <= Idade < 50: " << (eleitos40a50) << " (" << fixed << setprecision(2) << (eleitos40a50 / totalEleitos * 100) << fixed << setprecision(0)
+         << "%)" << endl;
+    cout << "50 <= Idade < 60: " << (eleitos50a60) << " (" << fixed << setprecision(2) << (eleitos50a60 / totalEleitos * 100) << fixed << setprecision(0)
+         << "%)" << endl;
+    cout << "60 <= Idade     : " << (eleitos60mais) << " (" << fixed << setprecision(2) << (eleitos60mais / totalEleitos * 100) << fixed << setprecision(0)
+         << "%)\n"
+         << endl;
 }
 
 void Relatorio::eleitosPorGenero() const {
@@ -319,8 +328,11 @@ void Relatorio::eleitosPorGenero() const {
 
     cout << "Eleitos, por gênero:" << endl;
     cout << fixed << setprecision(2);
-    cout << "Feminino:  " << eleitosFeminino << " (" << (eleitosFeminino / totalEleitos * 100) << "%)" << endl;
-    cout << "Masculino: " << eleitosMasculino << " (" << (eleitosMasculino / totalEleitos * 100) << "%)\n" << endl;
+    cout << "Feminino:  " << eleitosFeminino << " (" << fixed << setprecision(2) << (eleitosFeminino / totalEleitos * 100) << fixed << setprecision(0) << "%)"
+         << endl;
+    cout << "Masculino: " << eleitosMasculino << " (" << fixed << setprecision(2) << (eleitosMasculino / totalEleitos * 100) << fixed << setprecision(0)
+         << "%)\n"
+         << endl;
 }
 
 void Relatorio::totalDeVotos() const {
@@ -337,6 +349,9 @@ void Relatorio::totalDeVotos() const {
     totalDeVotos = totalDeVotosNominais + totalDeVotosLegenda;
 
     cout << "Total de votos válidos:    " << totalDeVotos << endl;
-    cout << "Total de votos nominais:   " << totalDeVotosNominais << " (" << (totalDeVotosNominais / totalDeVotos * 100) << "%)" << endl;
-    cout << "Total de votos de legenda: " << totalDeVotosLegenda << " (" << (totalDeVotosLegenda / totalDeVotos * 100) << "%)\n" << endl;
+    cout << "Total de votos nominais:   " << totalDeVotosNominais << " (" << fixed << setprecision(2) << (totalDeVotosNominais / totalDeVotos * 100) << fixed
+         << setprecision(0) << "%)" << endl;
+    cout << "Total de votos de legenda: " << totalDeVotosLegenda << " (" << fixed << setprecision(2) << (totalDeVotosLegenda / totalDeVotos * 100) << fixed
+         << setprecision(0) << "%)\n"
+         << endl;
 }
